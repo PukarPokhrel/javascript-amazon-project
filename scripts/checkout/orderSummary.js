@@ -8,12 +8,8 @@ import {
 import { getProduct, products } from '../../data/products.js';
 import { formatCurrency } from '../utils/money.js';
 import { deliveryOptions, getDeliveryOption } from '../../data/deliveryOptions.js'; // , deliveryDate
+import { renderPaymentSummary } from './paymentSummary.js';
 import dayjs from 'https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js';
-
-
-// const today = dayjs();
-// const deliveryDate = today.add(7, 'days');
-// console.log(deliveryDate.format('dddd, MMMM D'));
 
 export function renderOrderSummary() {
   let cartSummaryHTML = '';
@@ -35,8 +31,6 @@ export function renderOrderSummary() {
     const dateString = deliveryDate.format(
       'dddd, MMMM D'
     );
-
-    // const dateString = deliveryDate(deliveryOption);
 
     cartSummaryHTML += `
       <div class="cart-item-container
@@ -143,18 +137,10 @@ export function renderOrderSummary() {
         );
 
         container.remove();
-        updateCartQuantity();
+
+        renderPaymentSummary();
       });
     });
-
-  function updateCartQuantity() {
-    const cartQuantity = calculateCartQuantity();
-
-    document.querySelector('.js-return-to-home-link')
-      .innerHTML = `${cartQuantity} items`;
-  }
-
-  updateCartQuantity();
 
   document.querySelectorAll('.js-delivery-option')
     .forEach((element) => {
@@ -162,16 +148,9 @@ export function renderOrderSummary() {
         const { productId, deliveryOptionId } = element.dataset;
         updateDeliveryOption(productId, deliveryOptionId);
         renderOrderSummary();
+        renderPaymentSummary();
       });
     });
-
-  // function modifyLink(productId) {
-  //   const container = document.querySelector(
-  //     `.js-cart-item-container-${productId}`
-  //   );
-  //   return container;
-  // }
-
 
   document.querySelectorAll('.js-update-link')
     .forEach((link) => {
@@ -188,24 +167,25 @@ export function renderOrderSummary() {
   function handleUpdateQuantity(productId, quantityInput) {
     const newQuantity = Number(quantityInput.value);
 
-        if (newQuantity <= 0 || newQuantity >= 1000) {
-          alert('Quantity must be more than 0 and less than 1000');
-          return;
-        }
+    if (newQuantity <= 0 || newQuantity >= 1000) {
+      alert('Quantity must be more than 0 and less than 1000');
+      return;
+    }
 
-        updateQuantity(productId, newQuantity);
+    updateQuantity(productId, newQuantity);
 
-        const quantityLabel = document.querySelector(
-          `.js-quantity-label-${productId}`
-        );
-        quantityLabel.innerHTML = newQuantity;
+    const quantityLabel = document.querySelector(
+      `.js-quantity-label-${productId}`
+    );
+    quantityLabel.innerHTML = newQuantity;
 
-        updateCartQuantity();
+    renderOrderSummary();
+    renderPaymentSummary();
 
-        const container = document.querySelector(
-          `.js-cart-item-container-${productId}`
-        );
-        container.classList.remove('is-editing-quantity');
+    const container = document.querySelector(
+      `.js-cart-item-container-${productId}`
+    );
+    container.classList.remove('is-editing-quantity');
   }
 
   document.querySelectorAll('.js-save-link')
@@ -226,35 +206,3 @@ export function renderOrderSummary() {
       });
     });
 }
-
-
-
-// document.querySelectorAll('.js-update-link')
-//   .forEach((link) => {
-//     link.addEventListener('click', () => {
-//       const productId = link.dataset.productId;
-
-//       const container = document.querySelector(
-//         `.js-cart-item-container-${productId}`
-//       );
-//       container.classList.add('is-editing-quantity');
-//     });
-//   });
-
-// document.querySelectorAll('.js-save-link')
-//   .forEach((link) => {
-//     link.addEventListener('click', () => {
-//       const productId = link.dataset.productId;
-
-//       const container = document.querySelector(
-//         `.js-cart-item-container-${productId}`
-//       );
-
-//       container.classList.remove('is-editing-quantity');
-
-//       const quantityInput = document.querySelector(
-//         `.js-quantity-input-${productId}`
-//       );
-//       const newQuantity = Number(quantityInput.value);
-//     });
-// });
