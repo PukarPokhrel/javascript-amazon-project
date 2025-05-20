@@ -8,4 +8,10 @@ export function renderCheckout() {
   renderPaymentSummary();
 }
 
-renderCheckout();
+if (
+  typeof window !== 'undefined' &&
+  window.location &&
+  !(typeof jasmine !== 'undefined')
+) {
+  renderCheckout();
+}
