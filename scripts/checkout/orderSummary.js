@@ -122,7 +122,7 @@ export function renderOrderSummary() {
     .forEach((element) => {
       element.addEventListener('click', () => {
         const { productId, deliveryOptionId } = element.dataset;
-        updateDeliveryOption(productId, deliveryOptionId);
+        cart.updateDeliveryOption(productId, deliveryOptionId);
 
         renderCheckout();
       });
