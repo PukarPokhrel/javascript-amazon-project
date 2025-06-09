@@ -60,6 +60,37 @@ class Clothing extends Product {
   }
 }
 
+/*
+const date = new Date();
+console.log(date);
+console.log(date.toLocaleTimeString());
+*/
+
+/*
+console.log(this); // undefined in strict mode, global object in non-strict mode
+
+const object2 = {
+  a: 2,
+  b: this.a // error because `this` is not defined in this context
+};
+*/
+
+/*
+function logThis() {
+  console.log(this);
+}
+logThis(); // this = undefined
+logThis.call('hello'); // this = 'hello'
+
+this; // this = undefined
+const object3 = {
+  method: () => {
+    console.log(this); // arrow functions do not change the value of "this", so this = undefined
+  }
+};
+object3.method(); // this = undefined
+*/
+
 export const products = [
   {
     id: "e43638ce-6aa0-4b85-b27f-e1d07eb678c6",
