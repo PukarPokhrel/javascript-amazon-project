@@ -1,4 +1,5 @@
 import { validDeliveryOption } from './deliveryOptions.js';
+import { loadProducts } from './products.js';
 
 class Cart {
   cartItems; // Public property

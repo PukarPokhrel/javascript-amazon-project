@@ -23,3 +23,23 @@ if (
 ) {
   loadProducts();
 }
+
+
+// async function loadPage() {
+//   try {
+
+//     await Promise.all([
+//       loadProductsFetch(),
+//       loadCartFetch()
+//     ]);
+
+//   } catch (error) {
+//     console.log('Unexpected error. Please try again later.')
+//   }
+
+//   renderCheckoutHeader();
+//   renderOrderSummary();
+//   renderPaymentSummary();
+// }
+
+// loadPage();
