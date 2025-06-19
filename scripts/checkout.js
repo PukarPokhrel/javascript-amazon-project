@@ -17,14 +17,31 @@ export function renderCheckout() {
   renderPaymentSummary();
 }
 
+async function loadPage() {
+  await loadProductsFetch();
+
+  const value = await new Promise((resolve) => {
+    cart.loadCart(() => {
+      resolve('value3');
+    });
+  });
+
+  if (notJasmineTest) {
+    renderCheckout();
+  }
+}
+
+loadPage();
+
+/*
 Promise.all([
   loadProductsFetch(),
-  
+
   new Promise((resolve) => {
     cart.loadCart(() => {
       resolve();
     });
-  })
+  });
 
 ]).then((values) => {
   console.log(values); // ['value1', undefined]
@@ -32,6 +49,7 @@ Promise.all([
     renderCheckout();
   }
 });
+*/
 
 /*
 Promise.all([
