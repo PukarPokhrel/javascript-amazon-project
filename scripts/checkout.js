@@ -18,13 +18,22 @@ export function renderCheckout() {
 }
 
 async function loadPage() {
-  await loadProductsFetch();
+  try {
+    // throw 'error1'; // test error handling on async
 
-  const value = await new Promise((resolve) => {
-    cart.loadCart(() => {
-      resolve('value3');
+    await loadProductsFetch();
+
+    const value = await new Promise((resolve, reject) => {
+      // throw 'error2'; // test error handling on promises
+      cart.loadCart(() => {
+        // reject('error3'); // test error handling on promises
+        resolve('value3');
+      });
     });
-  });
+
+  } catch (error) {
+    console.log('Unexpected error. Please try again later.');
+  }
 
   if (notJasmineTest) {
     renderCheckout();
@@ -120,7 +129,6 @@ if (notJasmineTest) // notJasmineTest = typeof window !== 'undefined' && window.
 
 // async function loadPage() {
 //   try {
-
 //     await Promise.all([
 //       loadProductsFetch(),
 //       loadCartFetch()
@@ -130,9 +138,9 @@ if (notJasmineTest) // notJasmineTest = typeof window !== 'undefined' && window.
 //     console.log('Unexpected error. Please try again later.')
 //   }
 
-//   renderCheckoutHeader();
-//   renderOrderSummary();
-//   renderPaymentSummary();
+  // if (notJasmineTest) {
+  //     renderCheckout();
+  //   }
 // }
 
 // loadPage();
