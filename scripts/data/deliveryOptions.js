@@ -1,4 +1,4 @@
-import dayjs from 'https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js';
+import dayjs from 'https://unpkg.com/dayjs@1.11.13/esm/index.js';
 
 export const deliveryOptions = [{
   id: '1',
@@ -60,4 +60,42 @@ export function calculateDeliveryDate(deliveryOption) {
   );
 
   return dateString;
+}
+
+function calculateDeliveryDateFrom(orderTime, deliveryOption){
+    let orderDate = dayjs(orderTime);
+    let daysAdded = 0;
+
+    while(daysAdded < deliveryOption.deliveryDays){
+      orderDate = orderDate.add(1, 'day');
+
+      //skip weekends: 0 = Sunday, 6 = Saturday
+      if(orderDate.day() !== 0 && orderDate.day() !== 6){
+          daysAdded++;
+      }
+    }
+
+    return orderDate.format('MMMM D');
+}
+
+
+function countDaysBetween(startDate, endDate) {
+  return dayjs(endDate).diff(dayjs(startDate), 'day');
+}
+
+function findDeliveryOption(orderTime, estimatedDeliveryTime) {
+  const daysBetween = countDaysBetween(orderTime, estimatedDeliveryTime);
+
+  return deliveryOptions.find(option => option.deliveryDays === daysBetween
+  ) || null;
+}
+
+export function orderDeliveryDate(orderTime, estimatedDeliveryTime) {
+  const matchedOption = findDeliveryOption(orderTime, estimatedDeliveryTime);
+
+  let deliveryDate;
+  if (matchedOption) {
+    deliveryDate = calculateDeliveryDateFrom(orderTime, matchedOption);
+  }
+  return deliveryDate;
 }

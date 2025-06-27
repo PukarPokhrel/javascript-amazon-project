@@ -116,17 +116,32 @@ class Cart {
     this.saveToStorage();
   }
 
+  /*
   loadCart(fun) {
-  const xhr = new XMLHttpRequest();
+    const xhr = new XMLHttpRequest();
 
-  xhr.addEventListener('load', () => {
-    console.log(xhr.response);
-    fun();
-  });
+    xhr.addEventListener('load', () => {
+      console.log(xhr.response);
+      fun();
+    });
 
-  xhr.open('GET', 'https://supersimplebackend.dev/cart');
-  xhr.send();
-}
+    xhr.open('GET', 'https://supersimplebackend.dev/cart');
+    xhr.send();
+  }
+  */
+
+  async loadCartFetch() {
+    const response = await fetch('https://supersimplebackend.dev/cart');
+    const text = await response.text();
+    console.log(text);
+    return text;
+  }
+
+  // Extra feature: Make the cart empty after creating an order.
+  resetCart() {
+    this.cartItems = [];
+    this.saveToStorage();
+  }
 }
 
 export const cart = new Cart('cart-oop');

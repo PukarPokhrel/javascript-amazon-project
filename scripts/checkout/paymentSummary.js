@@ -78,7 +78,7 @@ export function renderPaymentSummary() {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          cart: cart.cartItems,
+          cart: cart.cartItems
         })
       });
 
@@ -88,7 +88,9 @@ export function renderPaymentSummary() {
       } catch (error) {
         console.log('Unexpected error. Please try again later.');
       }
-
+      
+      // Extra feature: Make the cart empty after creating an order.
+      cart.resetCart();
       window.location.href = 'orders.html';
     });
 };

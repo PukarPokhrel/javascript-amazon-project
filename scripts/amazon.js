@@ -1,14 +1,55 @@
 // import { cart, addToCart, calculateCartQuantity } from './data/cart.js';
 import { cart } from './data/cart-class.js';
-import { products, loadProducts } from './data/products.js';
+import { products, loadProductsFetch } from './data/products.js';
+import { renderAmazonHeader } from './amazon/amazonHeader.js';
 import { formatCurrency } from './utils/money.js';
 
-loadProducts(renderProductsGrid);
+const notJasmineTest = typeof window !== 'undefined' &&
+  window.location &&
+  !(typeof jasmine !== 'undefined');
+
+loadProductsFetch(renderProductsGrid);
+
+if (notJasmineTest) {
+  renderAmazonHeader();
+}
 
 function renderProductsGrid() {
   let productsHTML = '';
 
-  products.forEach((product) => {
+  const url = new URL(window.location.href);
+  const search = url.searchParams.get('search').toLowerCase();
+
+  let filteredProducts = products;
+
+  // If a search exists in the URL parameters,
+  // filter the products that match the search.
+  if(search) {
+    filteredProducts = products.filter((product) => {
+      let matchingKeyword = false;
+
+      product.keywords.forEach((keyword) => {
+        if (keyword.toLowerCase().includes(search)) {
+          matchingKeyword = true;
+        }
+      });
+
+      return matchingKeyword || product.name.toLowerCase().includes(search);
+    });
+  }
+
+  if (filteredProducts.length === 0) {
+    productsHTML = `
+      <div class="no-products-found">
+        <h3>No results for "${search}".</h3>
+      </div>
+    `;
+    document.querySelector('.js-products-grid')
+      .innerHTML = productsHTML;
+    return;
+  }
+
+  filteredProducts.forEach((product) => {
     productsHTML += `
       <div class="product-container">
         <div class="product-image-container">
@@ -66,18 +107,18 @@ function renderProductsGrid() {
   document.querySelector('.js-products-grid')
     .innerHTML = productsHTML;
 
-  function updateCartQuantity() {
-    const cartQuantity = cart.calculateCartQuantity();
+  // function updateCartQuantity() {
+  //   const cartQuantity = cart.calculateCartQuantity();
 
-    document.querySelector('.js-cart-quantity')
-      .innerHTML = cartQuantity;
-  }
+  //   document.querySelector('.js-cart-quantity')
+  //     .innerHTML = cartQuantity;
+  // }
 
-  updateCartQuantity();
+  // updateCartQuantity();
 
 
   function addedMessage(productId) {
-    let adddedMessageTimeoutId;
+    let addedMessageTimeoutId;
 
     const addedMessage = document.querySelector(
       `.js-added-to-cart-${productId}`
@@ -104,8 +145,13 @@ function renderProductsGrid() {
         const { productId } = button.dataset;
 
         cart.addToCart(productId);
-        updateCartQuantity();
+        // updateCartQuantity();
+        renderProductsGrid();
+        renderAmazonHeader();
         addedMessage(productId);
       });
     });
+
+    renderAmazonHeader();
+
 }

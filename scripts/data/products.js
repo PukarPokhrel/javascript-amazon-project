@@ -115,33 +115,65 @@ object3.method(); // this = undefined
 
 export let products = [];
 
-export function loadProductsFetch() {
-  const promise = fetch(
-    'https://supersimplebackend.dev/products'
-  ).then((response) => {
-    return response.json();
-  }).then((productsData) => {
-    products = productsData.map((productDetails) => {
-      if (productDetails.type == 'clothing') {
-        return new Clothing(productDetails);
-      // } else if (productDetails.type == 'appliance') {
-      //   return new Appliance(productDetails);
-      } else if (productDetails.keywords.includes('appliances')) {
-        productDetails.instructionsLink = 'images/appliance-instructions.png';
-        productDetails.warrantyLink = 'images/appliance-warranty.png';
+export async function loadProductsFetch(fun) {
+  try {
+    const response = await fetch('https://supersimplebackend.dev/products');
+    const productsData = await response.json();
+    products = productsData
+      .map((productDetails) => {
+        if (productDetails.type == 'clothing') {
+          return new Clothing(productDetails);
+        } else if (productDetails.keywords.includes('appliances')) {
+          productDetails.instructionsLink = 'images/appliance-instructions.png';
+          productDetails.warrantyLink = 'images/appliance-warranty.png';
 
-        return new Appliance(productDetails);
+          return new Appliance(productDetails);
+        }
+        return new Product(productDetails);
+      });
+
+      console.log('load products');
+
+      if (typeof fun === 'function') {
+        fun();
       }
-      return new Product(productDetails);
-    });
 
-    console.log('load products');
-  }).catch((error) => {
-    console.log('Unexpected error. Please try again later.');
-  });
-
-  return promise;
+    } catch (error) {
+      console.log('Unexpected error. Please try again later.', error);
+    }
 }
+
+
+// export function loadProductsFetch(fun) {
+//   const promise = fetch(
+//     'https://supersimplebackend.dev/products'
+//   ).then((response) => {
+//     return response.json();
+//   }).then((productsData) => {
+//     products = productsData.map((productDetails) => {
+//       if (productDetails.type == 'clothing') {
+//         return new Clothing(productDetails);
+//       // } else if (productDetails.type == 'appliance') {
+//       //   return new Appliance(productDetails);
+//       } else if (productDetails.keywords.includes('appliances')) {
+//         productDetails.instructionsLink = 'images/appliance-instructions.png';
+//         productDetails.warrantyLink = 'images/appliance-warranty.png';
+
+//         return new Appliance(productDetails);
+//       }
+//       return new Product(productDetails);
+//     });
+
+//     console.log('load products');
+
+//     fun();
+//   }).catch((error) => {
+//     console.log('Unexpected error. Please try again later.');
+//   });
+
+//   return promise;
+// }
+
 
 /*
 loadProductsFetch().then(() => {

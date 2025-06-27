@@ -19,14 +19,38 @@ export function renderCheckout() {
 
 async function loadPage() {
   try {
-    // throw 'error1'; // test error handling on async
+    // throw 'error1'; // on async
+
+    // await loadProductsFetch();
+    // await loadCartFetch();
+    
+    await Promise.all ([
+      loadProductsFetch(),
+      cart.loadCartFetch()
+    ]);
+
+  } catch (error) {
+    console.log('Unexpected error. Please try again later.');
+  }
+
+  if (notJasmineTest) {
+    renderCheckout();
+  }
+}
+
+loadPage();
+
+/*
+async function loadPage() {
+  try {
+    // throw 'error1'; // on async
 
     await loadProductsFetch();
 
     const value = await new Promise((resolve, reject) => {
-      // throw 'error2'; // test error handling on promises
+      // throw 'error2'; // on promises
       cart.loadCart(() => {
-        // reject('error3'); // test error handling on promises
+        // reject('error3'); // on promises
         resolve('value3');
       });
     });
@@ -41,13 +65,14 @@ async function loadPage() {
 }
 
 loadPage();
+*/
 
 /*
 Promise.all([
   loadProductsFetch(),
 
   new Promise((resolve) => {
-    cart.loadCart(() => {
+    cart.loadCartFetch(() => {
       resolve();
     });
   });
